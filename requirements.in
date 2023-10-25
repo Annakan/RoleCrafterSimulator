@@ -1,0 +1,7 @@
+pytest
+textual
+click
+nicegui
+rich
+aiohttp>=3.9.0b0
+shortuuid
