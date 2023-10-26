@@ -10,4 +10,4 @@ loguru
 ruff
 jupyterlab
 panda
-pandasgui
+git+https://github.com/adamerose/pandasgui.git#pandasgui

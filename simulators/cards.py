@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, fields, field, asdict
+from dataclasses import dataclass, fields, asdict
 from random import randint
 
 import shortuuid
@@ -7,10 +7,15 @@ import shortuuid
 
 @dataclass(kw_only=True)
 class CardTemplate:
-    t: str
+    t: str  # type
+    l: int  # level
     c: int
-    d: int = -1  # non discard-able card
+    d: int|None = None  # non discard-able card
     _fixed: bool = False
+
+    def __post_init__(self):
+        if self.d is None:
+            self.d = self.c
 
     @property
     def can_discard(self):
@@ -27,9 +32,16 @@ class CardTemplate:
         return Card(cid=cid, **asdict(self))
 
     def generate_variation(self, var_c: int = 10, var_d: int = 10) -> Card:
-        return Card(t=self.t, c=modulate(self.c, var_c), d=modulate(self.d, var_d) if self.can_discard else self.d)
+        return Card(
+            t=self.t,
+            l=self.l,
+            c=modulate(self.c, var_c),
+            d=modulate(self.d, var_d) if self.can_discard else self.d,
+        )
 
-    def generate_variations(self, var_c: int = 10, var_d: int = 10, count=10) -> list[Card]:
+    def generate_variations(
+        self, var_c: int = 10, var_d: int = 10, count=10
+    ) -> list[Card]:
         return [self.generate_variation(var_c, var_d) for i in range(count)]
 
 
@@ -44,7 +56,7 @@ class Card(CardTemplate):
             self.cid = f"{self.cid}_{shortuuid.uuid()[:4]}"
 
     def __str__(self):
-        return self.cid
+        return f"self.cid|Lvl:{self.l}|c:{self.c}|d:{self.d}"
 
 
 card_pool: dict[str, CardTemplate] = {}
@@ -55,6 +67,8 @@ def modulate(value, delta: int):
     return value - delta // 2 + variation
 
 
-def generate_variations(template: CardTemplate, count: int = 10, var_c: int = 10, var_d: int = 10):
+def generate_variations(
+    template: CardTemplate, count: int = 10, var_c: int = 10, var_d: int = 10
+):
     t, c, d = template
     return [Card(t=t, c=modulate(c, var_c), d=modulate(d, var_d)) for i in range(count)]
