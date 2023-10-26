@@ -2,12 +2,7 @@ from random import randint
 from collections import Counter
 from enum import Enum, auto, IntEnum
 import typing as T
-
-
-class Result(IntEnum):
-    SUCCESS = auto()
-    STAY = auto()
-    FAIL = auto()
+from simulators import RollResult
 
 
 def roll_pos(skill, complexity):
@@ -17,14 +12,14 @@ def roll_pos(skill, complexity):
     c_pass = (complexity >= r2)
     if art_pass and c_pass:
         if r1 > r2:
-            return Result.SUCCESS
+            return RollResult.SUCCESS
         else:
-            return Result.STAY
+            return RollResult.STAY
     if art_pass and not c_pass:
-        return Result.SUCCESS
+        return RollResult.SUCCESS
     if not art_pass and c_pass:
-        return Result.FAIL
-    return Result.STAY
+        return RollResult.FAIL
+    return RollResult.STAY
 
 
 def roll_pess(skill, complexity):
@@ -34,14 +29,14 @@ def roll_pess(skill, complexity):
     c_pass = (complexity >= r2)
     if art_pass and c_pass:
         if r1 > r2:
-            return Result.SUCCESS
+            return RollResult.SUCCESS
         else:
-            return Result.FAIL
+            return RollResult.FAIL
     if art_pass and not c_pass:
-        return Result.SUCCESS
+        return RollResult.SUCCESS
     if not art_pass and c_pass:
-        return Result.FAIL
-    return Result.STAY
+        return RollResult.FAIL
+    return RollResult.STAY
 
 
 # simulation grossière de la main
