@@ -5,3 +5,9 @@ nicegui
 rich
 aiohttp>=3.9.0b0
 shortuuid
+loguru
+# dev
+ruff
+jupyterlab
+panda
+pandasgui
