@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 from random import randint, shuffle
 from copy import copy
 from loguru import logger
@@ -18,7 +18,6 @@ ROLL_FAIL_AND_DAMAGE = RollResult.FAIL_AND_DAMAGE, 0
 ROLL_SUCCESS_WITH_ENERGY = RollResult.SUCCESS, 1
 ROLL_SUCCESS_NO_ENERGY = RollResult.SUCCESS, 0
 
-
 logger.disable(__name__)
 
 
@@ -28,8 +27,8 @@ class GameSummary(T.NamedTuple):
     project_size: int
     project_to_build: int
     lane_size: int
-    reserve_size:int
-    atelier_dm_resist:int
+    reserve_size: int
+    atelier_dm_resist: int
     optimist: bool
     damaged_slot_times: int
     project_start_defaults_count: int
@@ -39,6 +38,7 @@ class GameSummary(T.NamedTuple):
     max_energy: int
     remaining_energy: int
     constructed_count: int
+    overflowed_count: int
     product_default_count: int
     product_default_value: int
 
@@ -154,9 +154,7 @@ class CraftProject:
     def check_partial_success(self, stack: CardStack):
         product_count = stack.count_types(CARD_PRODUCT)
         material_count = stack.count_types(CARD_MATERIA)
-        return (
-            product_count == self.product_goal and material_count == self.materia_goal
-        )
+        return product_count == self.product_goal and material_count == self.materia_goal
 
 
 @dataclass
@@ -176,9 +174,7 @@ class Lane:
         return len(self._slots)
 
     def __str__(self):
-        return " | ".join(
-            f"{index}:{str(card)}" for index, card in enumerate(self._slots)
-        )
+        return " | ".join(f"{index}:{str(card)}" for index, card in enumerate(self._slots))
 
     def free_lane_space(self):
         return self._slots.count(None)
@@ -191,6 +187,12 @@ class Lane:
     def __iter__(self) -> T.Iterator[Card | None]:
         return self._slots.__iter__()
 
+    def __getitem__(self, key):
+        return self._slots[key]
+
+    def __setitem__(self, key, value):
+        self._slots[key] = value
+
     def first_free_slot(self) -> int | None:
         try:
             return self._slots.index(None)
@@ -200,9 +202,7 @@ class Lane:
     def free_count(self) -> int:
         return self._slots.count(None)
 
-    def add_card(
-        self, card: Card, at_pos: int | None = None
-    ) -> list[Card]:  # or CardStack?
+    def add_card(self, card: Card, at_pos: int | None = None) -> list[Card]:  # or CardStack?
         if at_pos is None:
             if (free_slot := self.first_free_slot()) is not None:
                 self._slots[free_slot] = card
@@ -246,15 +246,41 @@ class Lane:
 
 @dataclass
 class Atelier:
-    lane_size: int
-    reserve_size: int
+    lane_size: InitVar[int]
+    reserve_size: InitVar[int]
+    _lane_size: int = field(init=False)
+    _reserve_size: int = 0
     lane: Lane = field(init=False)
     reserve: Lane = field(init=False)
     damage_resistance: int = 0
+    complexity: int = 0
 
-    def __post_init__(self):
-        self.lane = Lane(self.lane_size)
-        self.reserve = Lane(self.reserve_size)
+    def __post_init__(self, lane_size, reserve_size):
+        self._lane_size = lane_size
+        self._reserve_size = reserve_size
+        self.setup()
+
+    def setup(self):
+        self.lane = Lane(self._lane_size)
+        self.reserve = Lane(self._reserve_size)
+
+    @property
+    def lane_size(self):
+        return self._lane_size
+
+    @lane_size.setter
+    def lane_size(self, value):
+        self._lane_size = value
+        self.setup()
+
+    @property
+    def reserve_size(self):
+        return self._reserve_size
+
+    @reserve_size.setter
+    def reserve_size(self, value):
+        self._reserve_size = value
+        self.setup()
 
 
 @dataclass
@@ -263,6 +289,7 @@ class Crafter:
     base_endurance: int
     current_endurance: int = field(init=False, default=0)
     base_skill_modifier: int = 0
+    library: CardStack | None = field(default=None)
 
     def setup(self):
         self.current_endurance = self.base_endurance
@@ -293,8 +320,10 @@ class CraftGame:
     project: CraftProject
     atelier: Atelier
     crafter: Crafter
+    crafter_hand: CardStack = field(default_factory=CardStack)
     _energy: int = field(init=False, default=0)
     max_energy: int = field(init=False, default=0)
+    overflowed_count: int = 0
     generous_rolls: bool = True
 
     turn_count: int = field(init=False, default=0)
@@ -304,6 +333,7 @@ class CraftGame:
     _success: bool = field(init=False, default=False)
     # stats
     damaged_slot_times: int = field(init=False, default=0)
+    game_summary: GameSummary
 
     def __post_init__(self):
         if len(self.project.deck) == 0:
@@ -319,33 +349,29 @@ class CraftGame:
         if self._energy > self.max_energy:
             self.max_energy = self._energy
 
-    def summary(self):
-        return GameSummary(
-            success=self._success,
-            turn_count=self.turn_count,
-            lane_size=self.atelier.lane_size,
-            reserve_size=self.atelier.reserve_size,
-            atelier_dm_resist=self.atelier.damage_resistance,
-            optimist=self.generous_rolls,
-            project_to_build=self.project.product_goal
-            + self.project.option_goal
-            + self.project.materia_goal,
-            project_start_defaults_count=self.project.deck.count_types(CARD_DEFAULT),
-            project_start_defaults_value=sum(
-                card.d for card in self.project.deck.filter_types(CARD_DEFAULT)
-            ),
-            project_size=len(
-                self.project.deck
-            ),  # wrong because we count_types product and materia defaults?
-            crafter_endurance=self.crafter_current_endurance,
-            crafter_skill=self.crafter.effective_skill,
-            max_energy=self.max_energy,
-            remaining_energy=self.energy,
-            damaged_slot_times=self.damaged_slot_times,
-            constructed_count=len(self.constructed_stack),
-            product_default_count=len(self.default_stack),
-            product_default_value=sum(card.d for card in self.default_stack),
-        )
+    # def finalize_summary(self):
+    #     summary = GameSummary(
+    #         success=self._success,
+    #         turn_count=self.turn_count,
+    #         lane_size=self.atelier.lane_size,
+    #         reserve_size=self.atelier.reserve_size,
+    #         atelier_dm_resist=self.atelier.damage_resistance,
+    #         optimist=self.generous_rolls,
+    #         project_to_build=self.project.product_goal + self.project.option_goal + self.project.materia_goal,
+    #         project_start_defaults_count=self.project.deck.count_types(CARD_DEFAULT),
+    #         project_start_defaults_value=sum(card.d for card in self.project.deck.filter_types(CARD_DEFAULT)),
+    #         project_size=len(self.project.deck),  # wrong because we count_types product and materia defaults?
+    #         crafter_endurance=self.crafter_current_endurance,
+    #         crafter_skill=self.crafter.effective_skill,
+    #         max_energy=self.max_energy,
+    #         remaining_energy=self.energy,
+    #         damaged_slot_times=self.damaged_slot_times,
+    #         constructed_count=len(self.constructed_stack),
+    #         overflowed_count=self.overflowed_count,
+    #         product_default_count=len(self.default_stack),
+    #         product_default_value=sum(card.d for card in self.default_stack),
+    #     )
+    #     return summary
 
     @property
     def lane(self):
@@ -369,7 +395,9 @@ class CraftGame:
         self.default_stack.clear()
         self._energy = 0
         self.max_energy = 0
+        self.overflowed_count = 0
         self._task_pile = copy(self.project.deck)
+        self._task_pile.shuffle()
         self.turn_count = 0
         self.damaged_slot_times = 0
 
@@ -380,16 +408,12 @@ class CraftGame:
         self.crafter.setup()
 
     def play_game(self) -> bool:
-        logger.info(
-            "===========================================NEW GAME==========================================="
-        )
+        logger.info("===========================================NEW GAME===========================================")
         while self.play_turn():
             # print(self.turn_count)
             if self.turn_count > 100:
                 raise Exception("Too many turns ABORT ABORT")
-        logger.info(
-            "===========================================GAME ENDED==========================================="
-        )
+        logger.info("===========================================GAME ENDED===========================================")
         return self._success
 
     def play_lane(self, lane: Lane, crafter: Crafter, turn_data: TurnData):
@@ -403,27 +427,23 @@ class CraftGame:
         Returns:
 
         """
-        for index, card in enumerate(lane):
+        # we want to process the cards by order of increasing complexity
+        indexes = list(range(self.atelier.lane_size))
+        indexes.sort(key=lambda x: lane[x].c if lane[x] else 65535)
+        for index in indexes:
+            card = lane[index]
             if card:
-                effective_skill = (
-                    self.crafter.effective_skill
-                    + turn_data.modifier_value
-                    + lane.slot_modifier(index)
-                )
-                logging.debug(
-                    f"turn {self.turn_count} slot {index} : card {card} | skill: {effective_skill}"
-                )
-                result, energy = self.roll_card(
-                    effective_skill, card, self.generous_rolls
-                )
+                effective_skill = self.crafter.effective_skill + turn_data.modifier_value + lane.slot_modifier(index)
+                logging.debug(f"turn {self.turn_count} slot {index} : card {card} | skill: {effective_skill}")
+                result, energy = self.roll_card(effective_skill, card, self.generous_rolls)
                 self.energy += energy
                 match result:
                     case RollResult.FAIL:
                         logger.info("Crafter failed {card} failed test", card=card)
                         if not card.is_fixed:
-                            logger.debug(
-                                "moving Card {card} to defaults stack", card=card
-                            )
+                            logger.debug("moving Card {card} to defaults stack", card=card)
+                            self.game_summary.product_default_count += 1
+                            self.game_summary.product_default_value += card.d
                             self.default_stack.append(lane.remove_at(index))
                     case RollResult.SUCCESS:
                         logger.info(
@@ -431,10 +451,12 @@ class CraftGame:
                             card=card,
                         )
                         self.constructed_stack.append(lane.remove_at(index))
+                        self.game_summary.constructed_count += 1
                     case RollResult.STAY:
                         logger.debug("Card {card} STAYED in the lane", card=card)
                     case RollResult.FAIL_AND_DAMAGE:
                         malus = max(card.d - self.atelier.damage_resistance, 0)
+                        self.game_summary.damaged_slot_times += 1
                         # malus = 0
                         if malus:
                             logger.error(
@@ -482,9 +504,7 @@ class CraftGame:
                 if overflow:
                     # check if overflow contains a loosing condition?
                     self.default_stack.extend(overflow)
-                    logger.critical(
-                        f"overflow of the main lane  => {overflow}", overflow=overflow
-                    )
+                    logger.critical(f"overflow of the main lane  => {overflow}", overflow=overflow)
         else:
             logger.info("Task pile is empty")
         # resolve lanes
@@ -493,20 +513,56 @@ class CraftGame:
         # @TODO
 
         # check loss
-        if self.crafter_current_endurance <= 0 or (
-            len(self._task_pile) == 0 and len(self.lane) == 0
-        ):
+        if self.crafter_current_endurance <= 0 or (len(self._task_pile) == 0 and len(self.lane) == 0):
             return False
         # check complete success
         self._success = self.project.check_total_success(self.constructed_stack)
         return not self._success
 
     def roll_card(self, skill, card: Card, optimist=True) -> (RollResult, int):
+        """
+        Simulates rolling dice to determine the outcome of playing a card.
+
+        Parameters:
+        - skill: The skill level of the crafter
+        - card: The Card object being played
+        - optimist: Whether to use optimistic rules (default True)
+
+        Returns:
+        - A tuple containing:
+          - The RollResult enum value
+          - The amount of energy used/gained
+
+        The method generates two random numbers between 1-100 to represent an
+        "art roll" and "complexity roll".
+
+        It compares the skill level to the art roll, and the card's complexity
+        to the complexity roll.
+
+        Based on the success/failure of these rolls, it returns one of the
+        RollResult enums:
+
+        - ROLL_SUCCESS_NO_ENERGY: Passed both rolls
+        - ROLL_SUCCESS_WITH_ENERGY: Passed art roll but not complexity roll
+        - ROLL_FAIL: Failed art roll but passed complexity roll
+        - ROLL_FAIL_AND_DAMAGE: Failed both rolls, damage to lane
+        - ROLL_STAY: Failed complexity roll but passed art roll
+
+        The optimist flag determines ROLL_STAY vs ROLL_FAIL when only failing
+        complexity.
+        """
+
         complexity = card.c
         roll_art = randint(1, 100)
         roll_slot = randint(1, 100)
         art_pass = skill >= roll_art
         c_pass = complexity >= roll_slot
+        # Dumb version of the automatic rule
+        if skill > complexity:
+            return ROLL_SUCCESS_NO_ENERGY
+        if skill < complexity-20:
+            logger.debug(f"skill {skill} very much below complexity {complexity}, not risking it ")
+            return ROLL_STAY
         if art_pass and c_pass:
             if roll_art > roll_slot:
                 return ROLL_SUCCESS_NO_ENERGY
@@ -520,5 +576,3 @@ class CraftGame:
         if roll_slot > roll_art:  # Damage to the lane
             return ROLL_FAIL_AND_DAMAGE
         return ROLL_STAY
-
-    summaries = []
