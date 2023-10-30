@@ -70,16 +70,23 @@ class CardStack(list):
     ):
         super().__init__(*args, **kwargs)
 
+    def __getitem__(self, key):
+        result = list.__getitem__(self, key)
+        if type(key) is slice:
+            return type(self)(result)
+        else:
+            return result
+
     def __setitem__(self, index, item):
         super().__setitem__(index, item)
 
-    def insert(self, index, item):
+    def insert(self, index, item: Card):
         super().insert(index, item)
 
-    def append(self, item):
+    def append(self, item: Card):
         super().append(item)
 
-    def extend(self, other):
+    def extend(self, other:T.Iterable):
         if isinstance(other, type(self)):
             super().extend(other)
         else:
@@ -90,14 +97,6 @@ class CardStack(list):
 
     def __repr__(self):
         return super().__repr__()
-
-    # def __len__(self):
-    #     return len(self.cards)
-    #
-    # def __getitem__(self, item):
-    #     return self.cards.__getitem__(item)
-    #
-    # def extend(self):
 
     def count_types(self, card_type: str) -> int:
         count: int = 0
@@ -333,7 +332,7 @@ class CraftGame:
     _success: bool = field(init=False, default=False)
     # stats
     damaged_slot_times: int = field(init=False, default=0)
-    game_summary: GameSummary
+    game_summary: GameSummary = field(init=False, default_factory=GameSummary)
 
     def __post_init__(self):
         if len(self.project.deck) == 0:
