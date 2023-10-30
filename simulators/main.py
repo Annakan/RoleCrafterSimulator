@@ -50,8 +50,8 @@ def iterate_game(
     )
     for _ in range(count):
         craft_game.start()
-        craft_game.play_game()
-        summaries.append(craft_game.summary())
+        craft_game.play_full_game()
+        summaries.append(craft_game.summary)
     return summaries
 
 
@@ -82,7 +82,7 @@ def evaluate_parameters(count=300) -> T.Iterable:
             c = Counter(summary.success for summary in summaries)
             mean_defauts = mean_of(summaries, "product_default_value")
             mean_defauts_count = mean_of(summaries, "product_default_count")
-            mean_overflowed_count = (summaries, "overflowed_count")
+            mean_overflowed_count = mean_of(summaries, "overflowed_count")
             print(
                 sorted([(i, round(c[i] / c.total() * 100.0, 0)) for i in c]),
                 mean_defauts,
