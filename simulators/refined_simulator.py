@@ -22,25 +22,25 @@ logger.disable(__name__)
 
 
 class GameSummary(T.NamedTuple):
-    success: bool
-    turn_count: int
-    project_size: int
-    project_to_build: int
-    lane_size: int
-    reserve_size: int
-    atelier_dm_resist: int
-    optimist: bool
-    damaged_slot_times: int
-    project_start_defaults_count: int
-    project_start_defaults_value: int
-    crafter_endurance: int
-    crafter_skill: int
-    max_energy: int
-    remaining_energy: int
-    constructed_count: int
-    overflowed_count: int
-    product_default_count: int
-    product_default_value: int
+    success: bool = False
+    turn_count: int = 0
+    project_size: int = 0
+    project_to_build: int = 0
+    lane_size: int = 0
+    reserve_size: int = 0
+    atelier_dm_resist: int =0
+    optimist: bool = True
+    damaged_slot_times: int = 0
+    project_start_defaults_count: int = 0
+    project_start_defaults_value: int = 0
+    crafter_endurance: int = 0
+    crafter_skill: int = 0
+    max_energy: int = 0
+    remaining_energy: int = 0
+    constructed_count: int = 0
+    overflowed_count: int = 0
+    product_default_count: int = 0
+    product_default_value: int = 0
 
 
 def generate_cards_for_tpls(tpls: list[(Card, int)], var_delta: int | None = None):
@@ -348,29 +348,29 @@ class CraftGame:
         if self._energy > self.max_energy:
             self.max_energy = self._energy
 
-    # def finalize_summary(self):
-    #     summary = GameSummary(
-    #         success=self._success,
-    #         turn_count=self.turn_count,
-    #         lane_size=self.atelier.lane_size,
-    #         reserve_size=self.atelier.reserve_size,
-    #         atelier_dm_resist=self.atelier.damage_resistance,
-    #         optimist=self.generous_rolls,
-    #         project_to_build=self.project.product_goal + self.project.option_goal + self.project.materia_goal,
-    #         project_start_defaults_count=self.project.deck.count_types(CARD_DEFAULT),
-    #         project_start_defaults_value=sum(card.d for card in self.project.deck.filter_types(CARD_DEFAULT)),
-    #         project_size=len(self.project.deck),  # wrong because we count_types product and materia defaults?
-    #         crafter_endurance=self.crafter_current_endurance,
-    #         crafter_skill=self.crafter.effective_skill,
-    #         max_energy=self.max_energy,
-    #         remaining_energy=self.energy,
-    #         damaged_slot_times=self.damaged_slot_times,
-    #         constructed_count=len(self.constructed_stack),
-    #         overflowed_count=self.overflowed_count,
-    #         product_default_count=len(self.default_stack),
-    #         product_default_value=sum(card.d for card in self.default_stack),
-    #     )
-    #     return summary
+    def setup_summary_base(self, game_summary: GameSummary) -> GameSummary:
+        summary = game_summary._replace(
+            success=self._success,
+            turn_count=self.turn_count,
+            lane_size=self.atelier.lane_size,
+            reserve_size=self.atelier.reserve_size,
+            atelier_dm_resist=self.atelier.damage_resistance,
+            optimist=self.generous_rolls,
+            project_to_build=self.project.product_goal + self.project.option_goal + self.project.materia_goal,
+            project_start_defaults_count=self.project.deck.count_types(CARD_DEFAULT),
+            project_start_defaults_value=sum(card.d for card in self.project.deck.filter_types(CARD_DEFAULT)),
+            project_size=len(self.project.deck),  # wrong because we count_types product and materia defaults?
+            crafter_endurance=self.crafter_current_endurance,
+            crafter_skill=self.crafter.effective_skill,
+            # max_energy=self.max_energy,
+            # remaining_energy=self.energy,
+            # damaged_slot_times=self.damaged_slot_times,
+            # constructed_count=len(self.constructed_stack),
+            # overflowed_count=self.overflowed_count,
+            # product_default_count=len(self.default_stack),
+            # product_default_value=sum(card.d for card in self.default_stack),
+        )
+        return summary
 
     @property
     def lane(self):
@@ -399,6 +399,8 @@ class CraftGame:
         self._task_pile.shuffle()
         self.turn_count = 0
         self.damaged_slot_times = 0
+        self.game_summary = self.setup_summary_base(self.game_summary)  # inelegant but we need to (re)init the summary
+
 
     def start(self):
         self.setup()
