@@ -284,8 +284,21 @@ class Atelier:
         self.setup()
 
 
+def calculate_base_endurance(
+    strength: int, dexterity: int, intelligence: int, size: int, constitution: int, skill: int
+) -> int:
+    return (strength + dexterity + intelligence + size + constitution) + max(0, skill - 50) // 5
+
+
+@dataclass
+class RPGPlayerCharacter:
+    craft_skill: int
+    base_endurance: int
+
+
 @dataclass
 class Crafter:
+    character: RPGPlayerCharacter
     craft_skill: int
     base_endurance: int
     current_endurance: int = field(init=False, default=0)
@@ -298,6 +311,14 @@ class Crafter:
     @property
     def effective_skill(self) -> int:
         return self.craft_skill + self.base_skill_modifier
+
+    @property
+    def craft_skill(self):
+        return self.character.craft_skill
+
+    @property
+    def base_endurance(self):
+        return self.character.base_endurance
 
 
 ACTION_MODIFIER_COST = -10
@@ -314,6 +335,16 @@ class TurnData:
 
     def current_modifier(self):
         return self.modifier_value
+
+
+@dataclass
+class GameState:
+    turn: int
+    turn_lane_bonuses: TurnData
+    crafter_deck: CardStack
+    lane: Lane
+    atelier: Atelier
+    crafter: Crafter
 
 
 @dataclass
@@ -423,7 +454,18 @@ class CraftGame:
             "__________________________________new turn {}__________________________________",
             self.turn_count,
         )
-
+        self._pre_pick(
+            game_state,
+            crafer,
+            atelier,
+            hand,
+        )
+        self._pick()
+        self._post_pick()
+        self._resolve_lane()
+        self._before_turn_end()
+        self._turn_end()
+        self._turn_ended()
 
         # lose endurance
         self.crafter_current_endurance -= 1
