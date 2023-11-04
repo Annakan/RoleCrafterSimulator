@@ -10,7 +10,7 @@ import typing as T
 
 from simulators import RollResult
 from simulators import PRODUCT_CARD_CODE, MATERIA_CARD_CODE, OPTION_CARD_CODE, DEFAULT_CARD_CODE
-from simulators.cards import Card
+from simulators.cards import *
 
 ROLL_STAY = RollResult.STAY, 0
 ROLL_FAIL = RollResult.FAIL, 0
@@ -292,6 +292,7 @@ def calculate_base_endurance(
 
 @dataclass
 class RPGPlayerCharacter:
+    name: str
     craft_skill: int
     base_endurance: int
 
@@ -299,8 +300,6 @@ class RPGPlayerCharacter:
 @dataclass
 class Crafter:
     character: RPGPlayerCharacter
-    craft_skill: int
-    base_endurance: int
     current_endurance: int = field(init=False, default=0)
     base_skill_modifier: int = 0
     library: CardStack | None = field(default=None)
@@ -454,18 +453,18 @@ class CraftGame:
             "__________________________________new turn {}__________________________________",
             self.turn_count,
         )
-        self._pre_pick(
-            game_state,
-            crafer,
-            atelier,
-            hand,
-        )
-        self._pick()
-        self._post_pick()
-        self._resolve_lane()
-        self._before_turn_end()
-        self._turn_end()
-        self._turn_ended()
+        # self._pre_pick(
+        #     game_state,
+        #     crafer,
+        #     atelier,
+        #     hand,
+        # )
+        # self._pick()
+        # self._post_pick()
+        # self._resolve_lane()
+        # self._before_turn_end()
+        # self._turn_end()
+        # self._turn_ended()
 
         # lose endurance
         self.crafter_current_endurance -= 1

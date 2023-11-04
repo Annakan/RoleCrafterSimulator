@@ -11,3 +11,4 @@ ruff
 jupyterlab
 panda
 git+https://github.com/adamerose/pandasgui.git#pandasgui
+msgspec

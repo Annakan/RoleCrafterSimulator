@@ -1,6 +1,6 @@
 import pytest
 
-from simulators.cards import CardTemplate, modulate, generate_variations
+from simulators.cards.core import modulate, generate_variations
 from simulators.card_templates import *
 
 
