@@ -54,7 +54,7 @@ class CardTemplate:
 
 @dataclass(kw_only=True)
 class Card(CardTemplate):  # @TODO remove the hierarchy dependency
-    _CardID: CardId = None
+    _card_id: CardId = None
 
     def __post_init__(self):
         if self.cid is None:
@@ -71,12 +71,11 @@ class Card(CardTemplate):  # @TODO remove the hierarchy dependency
     def play(self, state: VisibleGameState) -> VisibleGameState:
         raise NotImplementedError
 
-
     @classmethod
     def card_id(cls) -> CardId:
-        card_id = cls._CardID
+        card_id = cls._card_id
         if card_id is not None:
-            return cls._CardID.rsplit(':', 1)[0] if card_id.count(':') > 1 else card_id
+            return cls._card_id.rsplit(':', 1)[0] if card_id.count(':') > 1 else card_id
         return None
 
 
