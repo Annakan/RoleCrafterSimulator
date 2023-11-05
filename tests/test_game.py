@@ -1,6 +1,8 @@
 import pytest
 from pprint import pprint
-from simulators.refined_simulator import CraftGame, Atelier, Crafter, RPGPlayerCharacter
+
+from simulators.game_state import VisibleGameStateStruct
+from simulators.refined_simulator import CraftGame, Atelier, Crafter, RPGPlayerCharacter, CardStack
 
 
 @pytest.fixture
@@ -19,10 +21,11 @@ def crafter(character):
 
 
 def test_simple_game(mid_craft_project, atelier, crafter):
+    initial_game_state = VisibleGameStateStruct(turn=0, crafter=crafter, atelier=atelier, crafter_hand=CardStack())
     craft_game = CraftGame(
         project=mid_craft_project,
-        crafter=crafter,
-        atelier=atelier,
+        crafter_hand=CardStack(),
+        current_game_state=initial_game_state,
     )
     craft_game.start()
     craft_game.play_full_game()

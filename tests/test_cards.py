@@ -1,7 +1,5 @@
-import pytest
-
-from simulators.cards.core import modulate, generate_variations
-from simulators.card_templates import *
+from simulators.card.core import modulate
+from simulators.card.card_templates import *
 
 
 def test_card_from_tpl():

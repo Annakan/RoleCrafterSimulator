@@ -7,7 +7,7 @@ from simulators.refined_simulator import (
     Crafter,
     GameSummary,
 )
-from simulators.card_templates import *  # noqa: F403
+from simulators.cards.card_templates import *  # noqa: F403
 
 from collections import Counter
 

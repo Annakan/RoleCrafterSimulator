@@ -1,6 +1,6 @@
 
 from simulators.refined_simulator import Lane
-from simulators.card_templates import *
+from simulators.card.card_templates import *
 
 
 def test_lane():

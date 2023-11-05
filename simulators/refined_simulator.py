@@ -6,11 +6,14 @@ from random import randint, shuffle
 from copy import copy
 from loguru import logger
 
-import typing as T
-
 from simulators import RollResult
 from simulators import PRODUCT_CARD_CODE, MATERIA_CARD_CODE, OPTION_CARD_CODE, DEFAULT_CARD_CODE
-from simulators.cards import *
+from simulators.card import *
+
+import typing as T
+
+if T.TYPE_CHECKING:
+    from simulators.game_state import LaneStruct
 
 ROLL_STAY = RollResult.STAY, 0
 ROLL_FAIL = RollResult.FAIL, 0
@@ -66,9 +69,9 @@ def generate_cards_for_tpls(tpls: list[(Card, int)], var_delta: int | None = Non
 @dataclass
 class CardStack(list):
     def __init__(
-        self,
-        *args,
-        **kwargs,
+            self,
+            *args,
+            **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
@@ -147,9 +150,9 @@ class CraftProject:
         material_count = stack.count_types(MATERIA_CARD_CODE)
         option_count = stack.count_types(OPTION_CARD_CODE)
         return (
-            product_count == self.product_goal
-            and material_count == self.materia_goal
-            and self.option_goal == option_count
+                product_count == self.product_goal
+                and material_count == self.materia_goal
+                and self.option_goal == option_count
         )
 
     def check_partial_success(self, stack: CardStack):
@@ -181,7 +184,7 @@ class Lane:
         return self._slots.count(None)
 
     def discard_overflow(self):
-        self._slots, rejects = self._slots[: self._size], self._slots[self._size :]
+        self._slots, rejects = self._slots[: self._size], self._slots[self._size:]
         assert len(self._slots) == self._size
         return [r for r in rejects if r is not None]
 
@@ -244,6 +247,9 @@ class Lane:
     def slot_modifier(self, index):
         return self._slots_data[index]
 
+    def load_from_state(self, state: LaneStruct):
+        raise NotImplementedError
+
 
 @dataclass
 class Atelier:
@@ -285,7 +291,7 @@ class Atelier:
 
 
 def calculate_base_endurance(
-    strength: int, dexterity: int, intelligence: int, size: int, constitution: int, skill: int
+        strength: int, dexterity: int, intelligence: int, size: int, constitution: int, skill: int
 ) -> int:
     return (strength + dexterity + intelligence + size + constitution) + max(0, skill - 50) // 5
 
@@ -337,7 +343,7 @@ class TurnData:
 
 
 @dataclass
-class GameState:
+class VisibleGameState:
     turn: int
     turn_lane_bonuses: TurnData
     crafter_deck: CardStack
@@ -349,8 +355,7 @@ class GameState:
 @dataclass
 class CraftGame:
     project: CraftProject
-    atelier: Atelier
-    crafter: Crafter
+    current_game_state: VisibleGameState = field()
     crafter_hand: CardStack = field(default_factory=CardStack)
     _energy: int = field(init=False, default=0)
     generous_rolls: bool = True
@@ -376,6 +381,14 @@ class CraftGame:
         self._energy = value
         if self._energy > self._game_summary.max_energy:
             self._game_summary.max_energy = self._energy
+
+    @property
+    def atelier(self):
+        return self.current_game_state.atelier
+
+    @property
+    def crafter(self):
+        return self.current_game_state.crafter
 
     @property
     def summary(self):

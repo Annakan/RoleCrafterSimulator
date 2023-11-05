@@ -1,5 +1,5 @@
 from simulators import CARD_TOOL, DEFAULT_CARD_CODE, PRODUCT_CARD_CODE, MATERIA_CARD_CODE
-from simulators.cards import CardTemplate
+from simulators.card import CardTemplate
 
 # Materia templates
 

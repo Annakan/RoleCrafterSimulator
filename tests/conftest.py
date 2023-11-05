@@ -1,7 +1,7 @@
 import pytest
 
 from simulators.refined_simulator import CraftProject
-from simulators.card_templates import *  # noqa: F403
+from simulators.card.card_templates import *  # noqa: F403
 
 
 @pytest.fixture
