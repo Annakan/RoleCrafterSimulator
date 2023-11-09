@@ -10,7 +10,7 @@ class ToolCardTemplate(ToolCard):
     effect = "Gagne un point d'endurance"
     complexity = 70
     difficulty_value = 90
-    rarity ="R"
+    rarity = "R"
 
     """
     1	O	Permanent	D:302:01	normal	Fluidifiant Actif	"Placé 4 | Immobile"	Gagne un point d'endurance	70	90	Les outils s'activent sur un test d'artisanat simple			R				Les outils s'activent sur un test d'artisanat simple

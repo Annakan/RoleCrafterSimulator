@@ -53,8 +53,21 @@ class CardTemplate:
 
 
 @dataclass(kw_only=True)
-class Card(CardTemplate):  # @TODO remove the hierarchy dependency
+class Card:  # @TODO remove the hierarchy dependency
     _card_id: CardId = None
+    name: str
+    category: str # should be STRenum (permanent, pick_action, all_lane_action, reserve_action, main_lane_action ..)
+    conditions = {"phase":conditions_list}
+    properties: list[Descriptors]  # = ["Placé 4 | Immobile"]
+    effects: list[Effects]  # = "Gagne un point d'endurance" ?
+    rarity: CardRarity #  STREnum
+
+    t: str  # type
+    l: int  # level
+    c: int  # complexity
+    d: int | None = None  # Difficulty value
+    _fixed: bool = False
+
 
     def __post_init__(self):
         if self.cid is None:
