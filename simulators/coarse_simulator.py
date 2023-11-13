@@ -52,4 +52,4 @@ for turn in range(0, count):
     rolls = [roll_pos(skill - i * 10, complexity) for i in range(0, file_size)]
     c.update(rolls)
 print(c)
-sorted([(i, round(c[i] / c.total() * 100.0, 2)) for i in c])
+print(sorted([(i, round(c[i] / c.total() * 100.0, 2)) for i in c]))

@@ -598,6 +598,7 @@ class CraftGame:
         Based on the success/failure of these rolls, it returns one of the
         RollResult enums:
 
+         # not this is IA generated and totaly false: I.A. doesn't get LOGIC, annoying
         - ROLL_SUCCESS_NO_ENERGY: Passed both rolls
         - ROLL_SUCCESS_WITH_ENERGY: Passed art roll but not complexity roll
         - ROLL_FAIL: Failed art roll but passed complexity roll

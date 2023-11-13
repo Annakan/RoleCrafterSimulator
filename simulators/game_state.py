@@ -15,6 +15,18 @@ class AbstractCardListStruct(msgspec.Struct, array_like=True):
     cards: list[CardId] = msgspec.field(default_factory=list)
 
 
+class PlayerCardRollResultStruture(msgspec.Struct):
+    card_id: CardId
+    player_roll: int = 0
+    card_roll: int = 0
+    player_margin: int = 0
+    card_margin: int = 0
+    player_success: bool = False
+    card_success: bool = False
+    player_has_crit: bool = False
+    card_has_crit: bool = False
+
+
 class CrafterHandStruct(AbstractCardListStruct):
     pass
 
