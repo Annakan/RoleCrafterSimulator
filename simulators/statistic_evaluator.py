@@ -55,8 +55,10 @@ c = Counter()
 
 skill = 90
 card_complexity = 75
-skill_crit = skill // 10
+# skill_crit = skill // 10
+skill_crit = 10
 card_crit = card_complexity // 10
+# card_crit = 5
 count = 100000
 # file_size = 3
 
@@ -65,8 +67,13 @@ c.update(rolls)
 print(c)
 print(sorted([(i, round(c[i] / c.total() * 100.0, 2)) for i in c]))
 if skill >= card_complexity:
-    calculated = (pow(skill, 2) - (pow(card_complexity, 2) / 2) - ((skill - skill_crit) * card_crit)) / 10000
+    calculated = ((pow(skill, 2)  # skill square
+                  - (pow(card_complexity, 2) / 2)  # card complexity triangle
+                  + ((pow(skill_crit, 2) /2) - pow(card_crit,2)/2)  # size art crit zone lower triangle minus card crit triangle
+                  - ((skill - skill_crit) * card_crit)  # card crit rectangle
+                  + (card_complexity - skill_crit) * skill_crit)  # art crit rectangle
+                  / 10000)
     print(calculated * 100)
     calculated2 = (skill * skill / 2 + (skill - card_complexity) * skill - pow(skill - card_complexity, 2) / 2 - (
-                (skill - skill_crit) * card_crit)) / 10000
+            (skill - skill_crit) * card_crit) + (card_complexity - skill_crit) * skill_crit) / 10000
     print(calculated2 * 100)
