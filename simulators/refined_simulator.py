@@ -533,7 +533,7 @@ class CraftGame:
             card = lane[index]
             if card:
                 effective_skill = self.crafter.effective_skill + turn_data.modifier_value + lane.slot_modifier(index)
-                logging.debug(f"turn {self.turn_count} slot {index} : card {card} | skill: {effective_skill}")
+                logging.debug(f"turn {self.turn_count} slot {index} : card {card} | art_skill: {effective_skill}")
                 result, energy = self.roll_card(effective_skill, card, self.generous_rolls)
                 self.energy += energy
                 match result:
@@ -580,7 +580,7 @@ class CraftGame:
         Simulates rolling dice to determine the outcome of playing a card.
 
         Parameters:
-        - skill: The skill level of the crafter
+        - art_skill: The art_skill level of the crafter
         - card: The Card object being played
         - optimist: Whether to use optimistic rules (default True)
 
@@ -592,7 +592,7 @@ class CraftGame:
         The method generates two random numbers between 1-100 to represent an
         "art roll" and "complexity roll".
 
-        It compares the skill level to the art roll, and the card's complexity
+        It compares the art_skill level to the art roll, and the card's complexity
         to the complexity roll.
 
         Based on the success/failure of these rolls, it returns one of the
@@ -618,7 +618,7 @@ class CraftGame:
         if skill > complexity:
             return ROLL_SUCCESS_NO_ENERGY
         if skill < complexity - 20:
-            logger.debug(f"skill {skill} very much below complexity {complexity}, not risking it ")
+            logger.debug(f"art_skill {skill} very much below complexity {complexity}, not risking it ")
             return ROLL_STAY
         if art_pass and c_pass:
             if roll_art > roll_slot:
