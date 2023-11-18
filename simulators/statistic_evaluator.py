@@ -163,7 +163,7 @@ def roll_a_lot(skill, card_complexity, skill_crit, card_crit, count) -> list[Rol
 
 
 def main():
-    skill = 85
+    skill = 30
     # art_crit = art_skill // 10
     skill_crit = 10
 
