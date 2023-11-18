@@ -1,7 +1,7 @@
 from random import randint
 from collections import Counter
 from simulators import RollResult
-from math import pow
+from math import pow, trunc
 
 import typing as T
 
@@ -24,15 +24,15 @@ class RollChances(T.NamedTuple):
         return RollChances(
             self.skill,
             self.complexity,
-            int(self.win * 100),
-            int(self.stay * 100),
-            int(self.fail * 100),
-            int(self.damage * 100)
+            (self.win * 100),
+            (self.stay * 100),
+            (self.fail * 100),
+            (self.damage * 100)
         )
 
 
 def _roll_result(
-    art_roll, card_roll, art_pass, art_has_crit, card_pass, card_has_crit, art_fumble, card_fumble
+        art_roll, card_roll, art_pass, art_has_crit, card_pass, card_has_crit, art_fumble, card_fumble
 ) -> RollResult:
     #
     if art_fumble and card_pass:
@@ -99,25 +99,57 @@ def computed_chances(art_skill, card_complexity, art_crit=None, card_crit=None) 
         card_crit = card_complexity // 10
     if art_skill >= card_complexity:
         win = (
-            (
-                (art_skill * 100)  # art_skill rectangle
-                - (pow(card_complexity, 2) / 2)  # card complexity triangle
-                + (pow(art_crit, 2) / 2)
-                - pow(card_crit, 2) / 2
-                # size art crit zone lower triangle minus card crit triangle
-                - ((art_skill - art_crit) * card_crit)  # card crit rectangle
-                + (card_complexity - art_crit) * art_crit
-            )  # art crit rectangle
-            / 10000
+                (
+                        (art_skill * (100 - card_crit))  # art_skill rectangle
+                        - (card_complexity - art_crit) * (card_complexity - art_crit) / 2
+
+                        + ((art_crit * card_crit) - (pow(card_crit, 2) / 2) if art_crit > card_crit else (
+                        pow(card_crit, 2) / 2))  # card crit rectangle
+                )  # art crit rectangle
+                / 10000
         )
+        base_stay = (100 - card_complexity) * (100 - art_skill)
+        if card_crit > art_crit:
+            base_stay += pow(card_complexity, 2) / 2
+            base_stay -= pow(card_crit-art_crit, 2) / 2
+            base_stay -= (card_complexity-card_crit) * art_crit
+        else:
+            base_stay += pow(card_complexity-art_crit, 2)/2
+            base_stay += pow(card_crit, 2) / 2
+        stay = base_stay / 10000
+        fail = ((card_complexity - card_crit) * (98 - art_skill) + (card_crit * (art_skill - art_crit))) / 10000
+        damage = ((100 - art_skill) * card_crit + (2 * (card_complexity - card_crit))) / 10000
+
     else:
-        win = (
-            (100 - card_complexity) * art_skill
-            + (card_complexity - card_crit) * art_crit
-            + pow(card_crit, 2) / 2
-            + pow(art_skill - card_crit, 2) / 2
-        ) / 10000
-    return RollChances(int(art_skill * 100), card_complexity, win)
+        if card_crit > art_crit:
+            base_win = (100 - card_complexity) * art_skill
+            base_win += pow(art_skill - card_crit, 2) / 2
+            base_win += (card_complexity - card_crit) * art_crit
+        else:
+            base_win = 100 * art_skill
+            base_win -= (card_complexity - art_skill) * (art_skill-art_crit)
+            base_win -= pow(art_skill - art_crit, 2) / 2
+            base_win -= (art_skill - art_crit) * card_crit
+            base_win -= pow(card_crit, 2) / 2
+        # win = (
+        #
+        #               + (card_complexity - card_crit) * art_crit
+        #               + pow(card_crit, 2) / 2
+        #               + pow(art_skill - card_crit, 2) / 2
+        #       ) / 10000
+        win = base_win / 10000
+        base_stay = (100 - card_complexity) * (100 - art_skill)
+        if card_crit > art_crit:
+            base_stay += (card_complexity - card_crit) * (art_skill - art_crit) - pow(art_skill - card_crit, 2) / 2
+            base_stay += card_crit * art_crit - pow(art_crit, 2) / 2
+        else:
+            base_stay += (card_complexity - art_crit) * (art_skill - art_crit) - pow(art_skill - art_crit, 2) / 2
+            base_stay -= pow(card_crit, 2) / 2
+        stay = base_stay / 10000
+        fail = ((card_complexity - card_crit) * (98 - art_skill) + (card_crit * (art_skill - art_crit))) / 10000
+        damage = ((100 - art_skill) * card_crit + (2 * (card_complexity - card_crit))) / 10000
+
+    return RollChances(art_skill, card_complexity, win, stay, fail, damage)
 
 
 # simulation grossière de la main
@@ -135,11 +167,11 @@ def main():
     # art_crit = art_skill // 10
     skill_crit = 10
 
-    card_complexity = 75
+    card_complexity = 65
     # card_crit = card_complexity // 10
-    card_crit = 7
+    card_crit = 10
 
-    count = 200000
+    count = 800000
     # lane_size = 3
 
     c = Counter()
@@ -151,7 +183,7 @@ def main():
     estimated_stats = sorted([(i, round(c[i] / c.total() * 100.0, 2)) for i in c])
     print(f"Estimated : {estimated_stats}")
     cc = computed_chances(art_skill=skill, card_complexity=card_complexity, art_crit=skill_crit, card_crit=card_crit)
-    print(f"Computer success chances : {cc.win * 100}")
+    print(f"Computer success chances : {cc._as_percent_dict()}")
 
 
 if __name__ == "__main__":
