@@ -163,13 +163,13 @@ def roll_a_lot(skill, card_complexity, skill_crit, card_crit, count) -> list[Rol
 
 
 def main():
-    skill = 30
+    skill = 95
     # art_crit = art_skill // 10
-    skill_crit = 10
+    skill_crit = 6
 
-    card_complexity = 65
+    card_complexity = 60
     # card_crit = card_complexity // 10
-    card_crit = 10
+    card_crit = 6
 
     count = 800000
     # lane_size = 3
