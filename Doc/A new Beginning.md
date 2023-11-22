@@ -273,7 +273,7 @@ Il ne peut les placer directement dans la réserve.
   A contrario la complexité influe deux autres choses :
 
   * le coût de maintenance de la forge
-  * le temps de préparation d’un  artisanat, une forge complexe est lourde à mettre en œuvre
+  * le temps de préparation d’un artisanat, une forge complexe est lourde à mettre en œuvre
 
   Ces deux raisons expliquent, en plus des coûts de matériaux pourquoi les forges complexes ne produisent pas des armes simples ou complexes à la chaîne, elle ne sont pas faites pour cela.
 
@@ -353,6 +353,19 @@ Il ne peut les placer directement dans la réserve.
 ##### Taille de la main de l’artisan
 
   L’artisan dispose d’un budget de complexité pour composer sa main égal à son talent d’artisanat augmenté de la complexité **effective** de la forge (celle actuellement valable pour lui étant donné sa familiarité avec elle)
+
+## Pioche et Main 
+
+L'artisan prépare un deck de carte (talents, consommables, )
+
+Sa main fait talent / 10 carte
+
+A chaque tour il pioche une carte et éjecte une carte.
+
+Quand l'artisan joue une carte sa main de réduit d'une carte mais il continue à piocher et éjecter.
+
+Autrement dit l'artisan peut, sauf autre effet, jouer  Talent / 10 cartes pour un craft.
+
 # Les affinités
 
   Bleu[B]: ordre, Glace  
