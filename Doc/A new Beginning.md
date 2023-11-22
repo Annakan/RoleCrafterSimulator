@@ -113,10 +113,15 @@ Nouvelle idée pour un système de craft moins lourd que sur ordinateur
   les cartes compétences sont mélangées dans la pioche avec les cartes malfaçons et les cartes "compétence" choisies par l'artisan 
 
   L'artisan veut ajouter une poignée en eog, il doit avoir la carte "Compétence Eog" et en avoir la bonne quantité, sa carte compétence eog, indique qu'elle ne peut se résoudre que quand 3 cartes "affinité froid" sont présentes sur le board au moment de sa résolution et qu'elle injecte 5 carte "malfaçon" dans le la pioche, l'artisan peut décider d'ajouter des compétences cartes compétences "affinité froid" qu'il possède, qui ne sont pas des malfaçons et ont, par ailleurs d'autres  avantages si elles sont sur le board. Une forge à froid pourrait automatiquement injecter n cartes neutres "affinité froid" dans la pioche
+
 ## Le tour (les phases)
+
 ### Phase d'entretien et préparation
 
-  A chaque tour, Lors de cette phase,  l’artisan doit payer un point d’endurance puis l'artisan paie les coûts d'entretiensi il y en a (souvent des points d'endurance). L’artisan peut ne pas payer le coût d’une carte (mais pas le coût de base d’un nouveau tour) et dans ce cas les cartes non payées vont dans les malfaçons directement.
+  A chaque tour, Lors de cette phase,  l’artisan doit payer un point d’endurance puis l'artisan paie les coûts d'entretien, si il y en a (souvent des points d'endurance).
+
+ L’artisan peut ne pas payer le coût d’une carte d’entretien éventuel d’une carte **déjà dans la file de travail ou la réserve**  (mais pas le coût de base d’un nouveau tour) et dans ce cas les cartes non payées vont dans les malfaçons directement.
+
 ### Phase de pioche
 
   **Ensuite**, l'artisan **doit** piocher les x-Y cartes suivantes  (ou plus si bonus de pioche), qui viennent s'ajouter dans la file de production 
@@ -256,8 +261,10 @@ Il ne peut les placer directement dans la réserve.
   Toutes les cartes faces visibles  dans la file de construction ou la réserve voient leurs effets s'appliquer, ainsi que les outils de forge
 
   Question : garde-t-on cela ou incorpore-t-on cela dans les propriétés de la forge. cette dernière solution est probablement plus simple, même si on pourrait matérialiser cela par des emplacements d'extension disponibles dans la forge pour des cartes attachées en permanence et pour toujours à la forge (discrétion du GM pour retirer une extension et la déplacer, risque de casse, coûts etc ..)
+
 ## Caractéristiques des "ateliers"
-## Complexité
+
+### Complexité
 
   La complexité de la forge représente son «niveau» et est, en général, une mesure de ses capacités potentielles.
 
@@ -274,7 +281,8 @@ Il ne peut les placer directement dans la réserve.
 ### Damage résistance
 
   Cette valeur vient en diminution de la valeur de malfaçon d'une carte quand se produit un "damage à la forge", c'est à dire quand l'artisan échoue à son jet plus spectaculairement que la tâche elle-même, dans ce cas le **emplacement** de la file ou se trouve la carte prend un malus à tous les jets futurs de cette session, de max((valeur-defauts carte - damage resistance), 0) arrondi à la dizaine la plus proche.
-## Familiarité 
+
+### Familiarité
 
   Présentation : (-70) ... (+50) 
 
@@ -289,21 +297,23 @@ Il ne peut les placer directement dans la réserve.
   > Dans le cas d’une forge +50 .. -70 l’artisan peu donc faire 13 jets au maximum
   >
   > note : les réussites critiques comptent pour deux rangs, la fatigue compte, malus de 10 par tranche de 4 heures
-## Efficience
+### Efficience
 
   Format Eff.: x-Y 
 
   x : pioche minimale à chaque round
 
   Y pioche maximale à chaque round
-## Emplacements de construction et de réserve
+
+### Emplacements de construction et de réserve
 
   Format : C:4 / R:5 pour une forge neutre ou un schéma représentant les lignes de production des diverses affinités et la réserve, avec éventuellement le seuil d’affinité qui ouvrent ces emplacements.
 
   Nombre d'emplacement de construction et de réserve
 
   Affinités de chacun le cas échéant (+x élément a  -Y élément b, 0 pour les éléments non mentionnés)
-## Proportion et Affinités des malfaçons
+
+### Proportion et Affinités des malfaçons
 
   Chaque forge indique comment répartir les points de complexité :
 
@@ -318,7 +328,7 @@ Il ne peut les placer directement dans la réserve.
   Une forge de débutant aura coût en point des malfaçons communs faible (ex 10) mais générera des malfaçon supérieurs moins souvent (ex 8U et  10 R)
 
   > [!note] : les patrons peuvent imposer un certain nombre de **cartes** malfaçons de différents types, ces cartes n'entrent pas dans le calcul des proportions, elles s'ajoutent toujours au résultat de ce calcul
-## malfaçons spécifiques à un atelier
+### malfaçons spécifiques à un atelier
 
   Certaines forges ont des malfaçons spécifiques, seules ces malfaçons peuvent avoir des affinités, certaines forges ont 2, 3, 4, 5 cartes malfaçon de différents types. au moins un des ces malfaçons (au hasard) est placé au sommet du deck de malfaçons de sa catégorie (commun, inhabituel, rare, exceptionnel etc ...)
 # La main de l'artisan
@@ -376,6 +386,11 @@ Il ne peut les placer directement dans la réserve.
   * patrons de réalisation (épée à une main, à deux mains)
   * patrons de matériaux (Eog, adamantium, acier, haut acier etc. ...)
   * patrons d'augmentations (+1% crit, +/- 30% charisme,  -10% poids, changement allonge,  effets modifiés, effets automatiques (énorme), double effet, etc. ... )
+  * patrons d’alliages (ou de mixtures) qui permettent d’ajouter les caractéristiques d’un autre métal ou d’un autre composant à un patrron de réalisation. En terme de jeux les patrons d’alliage ajoute une complexité nette mais :
+    * réduisent le coût des patrons d’augmentation (d’option) significativement (50% de leur complexité par exemple, + seulement leurs défauts forcés de plus haut type)
+    * ouvre de nouveaux patrons d’augmentation (en ouvrant des slots d’options ET en  autorisant certains options compatibles avec ce métal.)
+    * Il peuvent ajouter des difficultés spécifiques mais en général uniquement des difficultés “nommées” (précises)
+
 
   Les patrons de réalisation un peu intéressants ont des complexités **très élevées** (150, 200, etc. ...), en général hors de porté d'une construction directe, il faut avoir des bonus (cartes compétences) dans les autres emplacements ou la réserve pour avoir une chance.
 
