@@ -42,11 +42,11 @@ Nouvelle idée pour un système de craft moins lourd que sur ordinateur
   
   Deux limites au craft ; épuisement, accumulation insurmontable de malfaçons (et épuisement du deck sans tirer la carte de structure)
   
-  un craft à une quantité minimale de matériaux liées à sont poids physique qui représentent 100 points de couts, l'artisan peut préparer jusqu'à 50% de plus ce qui augmente la taille du deck de craft de 25 % (1/2 up le pourcentage) .
+  ~~un craft à une quantité minimale de matériaux liées à sont poids physique qui représentent 100 points de couts, l'artisan peut préparer jusqu'à 50% de plus ce qui augmente la taille du deck de craft de 25 % (1/2 up le pourcentage) .~~
   
   La création du deck est partie prenante du jeu.
   
-  Les cartes négatives sont piochées dans des piles de "problèmes" de plus en plus sévères et coûteuses (problème mineur, problème sérieux, problème majeur, problème critique, évenement divin (positif ou négatif : genre aspire l'ame d'une personne présente et rend l'objet intelligent et possédé)
+  Les cartes négatives sont piochées dans des piles de "difficultés" de plus en plus sévères et coûteuses (problème mineur, problème sérieux, problème majeur, problème critique, événement divin (positif ou négatif : genre aspire l'ame d'une personne présente et rend l'objet intelligent et possédé)
   
   Plus on a de points de structure plus on pioche de cartes "problèmes" dans les piles correspondantes et plus on picohe dans les piles difficiles. (Idées ; renforcer une caractéristique veut dire plus de carte de niveau courant, renforcer deux, ajouter deux qualités différentes veut dire piocher dans le deck supérieur, etc etc .., la difficulté augmente très rapidement).
   
@@ -78,10 +78,14 @@ Nouvelle idée pour un système de craft moins lourd que sur ordinateur
 ---
 ## Le but
 
-  Le but est de collecter et "caster/produire" tous les composants du craft que l'on souhaite réaliser **tout** en produisant le moins de malfaçons possible (idéalement Zéro, par design ou par chance).
+  Le but est de collecter et "produire" tous les composants de l'artisanat que l'on souhaite réaliser **tout** en produisant le moins de malfaçons possible (idéalement Zéro, par design ou par chance).
 ## L'artisan
 
-  Endurance :  floor((DEX+INT+STR+CON) /4 + Skill/10)  ou   floor((DEX+INT+STR+CON) /**8** + Skill/10)  ou  floor((DEX+INT+STR+CON) /**16** + Skill/5) ou **floor((DEX+INT+STR+CON)/4 + floor(max(0,Skill-50)/5))**
+  Endurance : 
+ floor((DEX+INT+STR+CON) /4 + Skill/10)  ou
+ floor((DEX+INT+STR+CON) /**8** + Skill/10)  ou
+ floor((DEX+INT+STR+CON) /**16** + Skill/5) ou 
+**floor((DEX+INT+STR+CON)/4 + floor(max(0,Skill-50)/5))** ? => Bonne
 
   | Joueur    | Methode 1         | Méthode 2 | Méthode 3 |
   | --------- | ----------------- | --------- | --------- |
@@ -92,9 +96,11 @@ Nouvelle idée pour un système de craft moins lourd que sur ordinateur
 
   Un projet de craft doit réunir au minimum :
 
-  Un "patron" de l'objet voulu qui indique notamment la quantité de matériaux requis (en volume), avec quel type de matériaux ce patron est compatible (qui n'est pas forcément égale au poids final de l'objet), et une carte "matéria" par type de matériau que l'artisan compte utiliser, ou requis par les cartes patron qu'il ajoute, il doit utiliser un materiau majeur compatible avec le patron de craft.
+  Un "patron" de l'objet voulu qui indique notamment la quantité de matériaux requis (en volume) et avec quel type de matériaux ce patron est compatible. La volume / la masse indiquée n'est pas forcément égale au poids final de l'objet. 
 
-  L'artisan peut ajouter des extensions qui ont des couts potentiel de matériau et des exigences en types de matériau, qui doivent être respectées)
+Une carte  patron de "matéria" correspondant aux types de matériaux exigés par la patron par type de matériau que l'artisan compte utiliser, ou requis par les cartes patron qu'il ajoute, il doit utiliser les materiaux majeur compatible avec le patron de craft.
+
+  L'artisan peut ajouter des extensions/options qui ont des coûts potentiel de matériau et des exigences en types de matériau, qui doivent être respectées)
 
   > [!note] : le matériau in fine utilisé dicte les propriétés physiques finales de l'objet, même +30 un épée en bronze sera plus lourde qu'en haut acier, une en  chrome ou tout autre alliage extrêmement dur sera toujours fragile, etc .. a moins que des extensions changent ces caractéristiques.
 
@@ -104,15 +110,16 @@ Nouvelle idée pour un système de craft moins lourd que sur ordinateur
 
   La carte "compétence haut acier" indique qu'elle à une complexité de 50.
 
-  Si l'artisan s'arrête là, il à deux cartes "patron/compétence" , il fait la somme des complexités de ses cartes et calcule le nombre de malfaçons de différents types que sa forge induit, puis il ajoute les malfaçons inhérent aux cartes de patron qu’il a choisies.
+  Si l'artisan s'arrête là, il à deux cartes "patron/compétence" , il fait la somme des complexités de ses cartes et calcule le nombre de malfaçons de différents types que sa forge induit, puis il ajoute les difficultés inhérentes aux cartes de patron qu’il a choisies.
 
   L'artisan peut ajouter des cartes "compétence" de son choix dans le pool, pour chaque carte compétence ajoutée leur complexité s'ajoute à la pile des tâches.
 
-  Taille Tampon C puis Taille Tampon U puis Taille Tampon R etc .. et on recommence depuis C après L
-
   les cartes compétences sont mélangées dans la pioche avec les cartes malfaçons et les cartes "compétence" choisies par l'artisan 
 
-  L'artisan veut ajouter une poignée en eog, il doit avoir la carte "Compétence Eog" et en avoir la bonne quantité, sa carte compétence eog, indique qu'elle ne peut se résoudre que quand 3 cartes "affinité froid" sont présentes sur le board au moment de sa résolution et qu'elle injecte 5 carte "malfaçon" dans le la pioche, l'artisan peut décider d'ajouter des compétences cartes compétences "affinité froid" qu'il possède, qui ne sont pas des malfaçons et ont, par ailleurs d'autres  avantages si elles sont sur le board. Une forge à froid pourrait automatiquement injecter n cartes neutres "affinité froid" dans la pioche
+  L'artisan veut ajouter une poignée en eog, il doit avoir, d'une part la carte option "alliage Acier/EOG" la carte "Materiau Eog" et en avoir la bonne quantité, sa carte compétence eog, indique qu'elle ne peut se résoudre que quand 3 cartes "affinité froid" sont présentes sur le board au moment de sa résolution et qu'elle injecte 5 carte "difficultés" dans la pile de travail.
+
+> [!todo] Faut il des cartes d'artisan qui s'injectent dans la file de production (et apportent des bonus)
+> l'artisan peut décider d'ajouter des compétences cartes compétences "affinité froid" qu'il possède, qui ne sont pas des malfaçons et ont, par ailleurs d'autres  avantages si elles sont sur le board. Une forge à froid pourrait automatiquement injecter n cartes neutres "affinité froid" dans la pioche
 
 ## Le tour (les phases)
 
@@ -315,27 +322,34 @@ Il ne peut les placer directement dans la réserve.
 
 ### Proportion et Affinités des malfaçons
 
-  Chaque forge indique comment répartir les points de complexité :
+  Chaque forge indique comment convertir en "difficultés" les points de complexité des patrons initiaux:
 
-  Valeur d'une malfaçon de commun` ex : 20 points
+  Valeur d'une difficulté commune ` ex : 20 points
 
-  malfaçon inhabituel : tous les X malfaçons communs (en plus) exemple : 3
+  difficulté inhabituelle : tous les X difficultés communes (en plus) exemple : 3
 
-  malfaçon rare : tous les Y malfaçons inhabituels (en plus) : exemple 3
+  difficulté rare : tous les Y difficultés inhabituelles (en plus) : exemple 3
 
-  Sur une construction à 300 points de complexité = 15 malfaçons communs, 3 inhabituels, 1 rare
+  Sur une construction à 300 points de complexité = 15 difficultés communes, 3 inhabituelles, 1 rare
 
-  Une forge de débutant aura coût en point des malfaçons communs faible (ex 10) mais générera des malfaçon supérieurs moins souvent (ex 8U et  10 R)
+  Une forge de débutant aura coût en point des malfaçons communs faible (ex 10) mais générera des difficultés supérieures moins souvent (ex 8 U et  10 R)
 
   > [!note] : les patrons peuvent imposer un certain nombre de **cartes** malfaçons de différents types, ces cartes n'entrent pas dans le calcul des proportions, elles s'ajoutent toujours au résultat de ce calcul
-### malfaçons spécifiques à un atelier
+### ~~malfaçons spécifiques à un atelier~~
 
-  Certaines forges ont des malfaçons spécifiques, seules ces malfaçons peuvent avoir des affinités, certaines forges ont 2, 3, 4, 5 cartes malfaçon de différents types. au moins un des ces malfaçons (au hasard) est placé au sommet du deck de malfaçons de sa catégorie (commun, inhabituel, rare, exceptionnel etc ...)
+  ~~Certaines forges ont des malfaçons spécifiques, seules ces malfaçons peuvent avoir des affinités, certaines forges ont 2, 3, 4, 5 cartes malfaçon de différents types. au moins un des ces malfaçons (au hasard) est placé au sommet du deck de malfaçons de sa catégorie (commun, inhabituel, rare, exceptionnel etc ...)~~
 # La main de l'artisan
 ## Les techniques
 #### Carte talent d'artisan
 
-  Ces cartes sont attachées à l'artisan et si la forge dispose de emplacements pour cela, l'artisan peut librement les poser en début de session d'artisanat, pour toute la session.
+  ~~Ces cartes sont attachées à l'artisan et si la forge dispose de emplacements pour cela, l'artisan peut librement les poser en début de session d'artisanat, pour toute la session.~~
+
+Les cartes de talents de l'artisan sont des "patrons" de technique que l'artisan peut ajouter à son "plan de fabrication", en échange d'ajouter de la complexité, les talents permettent à l'artisan "d'injecter" dans la pile de travail des cartes positives pour lui (gagner un point d'endurance, une énergie) ou des cartes avec des affinités spécifiques dont il pense qu'il aura besoin pour construire certaines cartes. 
+
+> [!note] l'Ajout de complexité du talent peut induire l'ajout de difficultés de rangs supplémentaires dans la file de travail, c'est normal et voulu.
+
+> [!note] Certains Talents "supérieurs" (mythiques) permettent de "remplacer" des difficultés par cartes d'affinités/de talents, elles indiquent quelle rang de difficultés elles substituent et cette substitution est toujours aléatoire. [A réfléchir]
+
 #### Cartes "composants" , outils et "interventions"
 ##### Composants
 
@@ -347,20 +361,21 @@ Il ne peut les placer directement dans la réserve.
   Les outils sont par défaut "immobiles" sur la ligne de production, ils ne peuvent être déplacés par l'artisant.  Cependant  les règles normales de "décalage" ne s'appliquent, les cartes qui doivent se décaler les "poussent vers la droite" ( ils se décalent **toujours** et doivent être construits avant d'être perdus ?)
 ##### Intervention
 
-  Les cartes "intervention" sont le reflet de talents de l'artisan et retournent à l'artisan à la fin de la fabrication.
+  Les cartes "intervention" sont le reflet de compétences de l'artisan et retournent à l'artisan à la fin de la fabrication.
 
   Toutes peuvent être jouées dans toutes les phase avec laquelle elles sont compatibles (construction, défausse , pioche, à tout instant, après ou avant le craft, , etc ...)
+
 ##### Taille de la main de l’artisan
 
   L’artisan dispose d’un budget de complexité pour composer sa main égal à son talent d’artisanat augmenté de la complexité **effective** de la forge (celle actuellement valable pour lui étant donné sa familiarité avec elle)
 
+ou : Sa main fait talent / 10 carte
+
 ## Pioche et Main 
 
-L'artisan prépare un deck de carte (talents, consommables, )
+L'artisan prépare un deck de carte (talents, consommables, interventions)
 
-Sa main fait talent / 10 carte
-
-A chaque tour il pioche une carte et éjecte une carte.
+A chaque tour il pioche une carte et éjecte une carte dans une défausse qu'il reprend une fois sa pioche épuisée ?.
 
 Quand l'artisan joue une carte sa main de réduit d'une carte mais il continue à piocher et éjecter.
 
@@ -430,8 +445,15 @@ Autrement dit l'artisan peut, sauf autre effet, jouer  Talent / 10 cartes pour u
   En cas d’échec non.
 
   La difficulté du jet d’artisanat augmente à chaque activation en partant de la difficulté de la carte ? Ou les cartes ont un nombre de charges par craft ou global (éventuellement infini), si la charge tombe à Zéro l’outil est détruit ? => Mieux en faire des propriété des cartes
-### Cartes malfaçons potentiels
+### Cartes difficultés 
+
+Les difficultés doivent êtres construites pour ne pas tomber dans la pile de malfaçons et donner des défauts.
+
 ### Cartes de défauts
+
+Les défauts sont des cartes inconnues de l'artisan et attachées à son produit en conséquence des difficultés tombées dans la pile de malfacons.
+Certains défauts sont en fait "vides", d'autres ont la capacité de ruiner le craft ...
+
 ## Données sur toutes les cartes
 
   * Complexité : toutes les cartes => la difficulté de base de la construction 
@@ -455,7 +477,14 @@ Autrement dit l'artisan peut, sauf autre effet, jouer  Talent / 10 cartes pour u
 
   Cette carte va directement dans la réserve 
 
-  (sauf si l’artisan paie un point d’endurance pour la maintenir dans la file de production. ?)
+  (sauf si l’artisan paie un point d'énergie pour la maintenir dans la file de production. ?)
+
+### Réservable
+
+Cette carte peut aller  directement dans la réserve. Les "talents" sont souvent dans ce cas.
+
+
+
 ### Unique
 
   Une seule de cartes avec ce nom (numéro) peut être sur le plateau à la fois, une nouvelle carte envoie **immédiatement** les deux cartes de même nom (id) dans la pile de malfaçons, sans jets de sauvegarde. L’artisan peut avoir un effet «de pioche» ou jouer un trait d’artisan qui lui permet de gérer cet effet entre la pioche et la pose sur la ligne de production. 
